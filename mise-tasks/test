@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#MISE description="Run plugin tests - install and execute tool"
+set -euo pipefail
+
+mise plugin link --force composer .
+mise cache clear
+mise install composer@2.9.5
+
+# Capture and display the output while also verifying it
+output=$(mise exec "composer@2.9.5" -- "composer" --version)
+echo "composer output: ${output}"
+
+if echo "${output}" | grep -q '2.9.5'; then
+  echo "✓ Tests passed"
+else
+  echo "✗ Test failed: expected version composer@2.9.5"
+  exit 1
+fi
